@@ -1,10 +1,8 @@
 package na.pham.student.service;
 
-import na.pham.student.FeignClients.AddressFeignClients;
 import na.pham.student.entity.Student;
 import na.pham.student.repository.StudentRepository;
 import na.pham.student.request.CreateStudentRequest;
-import na.pham.student.response.AddressResponse;
 import na.pham.student.response.StudentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,7 @@ public class StudentService {
     private StudentRepository studentRepository;
 
     @Autowired
-    private AddressFeignClients addressFeignClients;
+    private CommonService commonService;
 
     public StudentResponse createStudent(CreateStudentRequest createStudentRequest) {
         Student student = new Student();
@@ -32,11 +30,7 @@ public class StudentService {
     public StudentResponse getById(Long id) {
         Student student = studentRepository.findById(id).get();
         StudentResponse studentResponse = new StudentResponse(student);
-        studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
+        studentResponse.setAddressResponse(commonService.getAddressById(student.getAddressId()));
         return studentResponse;
-    }
-
-    private AddressResponse getAddressById(Long addressId) {
-        return addressFeignClients.getAddressById(addressId);
     }
 }
